@@ -96,4 +96,7 @@ dependencies {
     implementation 'org.mindrot:jbcrypt:0.4'
     implementation "androidx.security:security-crypto:1.1.0-alpha03"
 
+    // okhttp for sending HTTP requests
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+
 }

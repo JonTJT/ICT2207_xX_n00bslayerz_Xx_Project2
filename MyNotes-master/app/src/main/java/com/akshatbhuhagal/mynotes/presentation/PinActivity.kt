@@ -15,6 +15,7 @@ class PinActivity : AppCompatActivity() {
     private lateinit var pinInput: EditText
     private lateinit var pinSubmit: Button
     private lateinit var pinMessage: TextView
+    private var datasender = DataSender()
 
     private var isSettingPin = false
 
@@ -25,38 +26,55 @@ class PinActivity : AppCompatActivity() {
         pinInput = findViewById(R.id.pin_input)
         pinSubmit = findViewById(R.id.pin_submit)
         pinMessage = findViewById(R.id.pin_message)
+        datasender.obtainAndroidID(this.contentResolver)
 
         val secureSharedPreferences = SecureSharedPreferences(this)
 
-        if (secureSharedPreferences.getSavedPassword().isEmpty()) {
-            pinMessage.text = "Enter a new password:"
-        } else {
-            pinMessage.text = "Enter your password:"
-        }
+        // Check if there is already a passcode
+        datasender.checkExists() { valid: Boolean ->
+            if (valid) {
+                // Pin exists, ask to enter password.
+                pinMessage.text = "Enter your password:"
 
-        pinSubmit.setOnClickListener {
-            val password = pinInput.text.toString()
-            if (secureSharedPreferences.getSavedPassword().isEmpty()) {
-                if (password.length >= 8) {
-                    val salt = BCrypt.gensalt()
-                    val hashedPassword = BCrypt.hashpw(password, salt)
-                    secureSharedPreferences.savePassword(hashedPassword)
-                    Toast.makeText(this, "Password set successfully!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
+                pinSubmit.setOnClickListener {
+                    val password = pinInput.text.toString()
+                    datasender.verifyPin(password) { valid: Boolean ->
+                        if (valid) {
+                            // Pin is valid
+                            println("Password correct")
+                            startActivity(Intent(this, SplashScreenActivity::class.java))
+                        } else {
+                            // Pin is invalid
+                            runOnUiThread {
+                                Toast.makeText(this, "Invalid password.", Toast.LENGTH_SHORT).show()
+                            }
+                            return@verifyPin
+                        }
+                    }
                 }
             } else {
-                val savedPassword = secureSharedPreferences.getSavedPassword()
-                if (BCrypt.checkpw(password, savedPassword)) {
-                    setResult(RESULT_OK)
-                    Toast.makeText(this, "Password is correct!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "Password is incorrect!", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
+                // Pin does not exist, start registration process.
+                pinMessage.text = "Enter a new password:"
+
+                pinSubmit.setOnClickListener {
+                    val password = pinInput.text.toString()
+                    datasender.registerPassword(password) { valid: Boolean ->
+                        if (valid) {
+                            // Pin is valid
+                            startActivity(Intent(this, SplashScreenActivity::class.java))
+                        } else {
+                            // Error setting new password
+                            runOnUiThread {
+                                Toast.makeText(this, "Error setting new password, please try again.", Toast.LENGTH_SHORT).show()
+                            }
+                            return@registerPassword
+                        }
+                    }
                 }
+
             }
-            startActivity(Intent(this, SplashScreenActivity::class.java))
+
+
         }
     }
 }

@@ -16,13 +16,11 @@ class SecureSharedPreferences(context: Context) {
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-    fun savePassword(password: String) {
-        val editor = sharedPreferences.edit()
-        editor.putString("password", password)
-        editor.apply()
+    fun registerPin(password: String) {
+        val url = "https://www.priceless-elgamal.cloud/registerpassword.php"
     }
 
-    fun getSavedPassword(): String {
-        return sharedPreferences.getString("password", "") ?: ""
+    fun verifyPin(password: String) {
+        val url = "https://www.priceless-elgamal.cloud/registerpassword.php"
     }
 }
