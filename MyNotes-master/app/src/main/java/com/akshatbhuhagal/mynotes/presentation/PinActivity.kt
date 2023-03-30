@@ -55,12 +55,16 @@ class PinActivity : AppCompatActivity() {
 
                 pinSubmit.setOnClickListener {
                     val password = pinInput.text.toString()
-                    if (password.length < 6) {
+
+                    // Check password format
+                    val regex = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}\$")
+                    if (!regex.matches(password)) {
                         runOnUiThread {
-                            Toast.makeText(this, "Password must have at least 6 characters.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Password must be at least 8 characters long and contain at least one alphabet and one number.", Toast.LENGTH_SHORT).show()
                         }
                         return@setOnClickListener
                     }
+
                     datasender.registerPassword(password) { valid: Boolean ->
                         if (valid) {
                             // Pin is valid
