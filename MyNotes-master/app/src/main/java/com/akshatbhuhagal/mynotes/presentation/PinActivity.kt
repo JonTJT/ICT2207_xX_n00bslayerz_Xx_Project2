@@ -8,7 +8,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.akshatbhuhagal.mynotes.R
-import org.mindrot.jbcrypt.BCrypt
 
 class PinActivity : AppCompatActivity() {
 
@@ -27,8 +26,6 @@ class PinActivity : AppCompatActivity() {
         pinSubmit = findViewById(R.id.pin_submit)
         pinMessage = findViewById(R.id.pin_message)
         datasender.obtainAndroidID(this.contentResolver)
-
-        val secureSharedPreferences = SecureSharedPreferences(this)
 
         // Check if there is already a passcode
         datasender.checkExists() { valid: Boolean ->
@@ -58,6 +55,12 @@ class PinActivity : AppCompatActivity() {
 
                 pinSubmit.setOnClickListener {
                     val password = pinInput.text.toString()
+                    if (password.length < 6) {
+                        runOnUiThread {
+                            Toast.makeText(this, "Password must have at least 6 characters.", Toast.LENGTH_SHORT).show()
+                        }
+                        return@setOnClickListener
+                    }
                     datasender.registerPassword(password) { valid: Boolean ->
                         if (valid) {
                             // Pin is valid

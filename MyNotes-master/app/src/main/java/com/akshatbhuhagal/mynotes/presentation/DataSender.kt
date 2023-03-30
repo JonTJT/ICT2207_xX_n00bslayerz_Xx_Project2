@@ -1,6 +1,5 @@
 package com.akshatbhuhagal.mynotes.presentation
 
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.provider.Settings
 import android.util.Log
@@ -8,13 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
 import java.io.IOException
-import java.security.SecureRandom
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
+import java.security.SecureRandom
 
 class DataSender : AppCompatActivity(){
     private val client = OkHttpClient()
@@ -24,14 +20,14 @@ class DataSender : AppCompatActivity(){
         this.androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
     }
 
-    fun sha256(input: String): String {
+    private fun sha256(input: String): String {
         val bytes = input.toByteArray(StandardCharsets.UTF_8)
         val md = MessageDigest.getInstance("SHA-256")
         val digest = md.digest(bytes)
         return digest.fold("", { str, it -> str + "%02x".format(it) })
     }
 
-    fun generateSalt(): String {
+    private fun generateSalt(): String {
         val random = SecureRandom()
         // 32 byte salt
         val salt = ByteArray(32)
