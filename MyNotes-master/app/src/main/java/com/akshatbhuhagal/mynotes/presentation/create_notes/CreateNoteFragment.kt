@@ -98,7 +98,7 @@ class CreateNoteFragment :
             makeVisible(layoutImage,imgNote.imgDelete)
         } else {
             /* Comment this function if application is crashing */
-            makeGone(layoutImage,imgNote.imgDelete)
+//            makeGone(layoutImage,imgNote.imgDelete)
         }
 
         if (note.webLink != EMPTY_STRING) {
@@ -108,7 +108,7 @@ class CreateNoteFragment :
             etWebLink.setText(note.webLink)
         } else {
             /* Comment this function if application is crashing */
-            makeGone(imgUrlDelete,layoutWebUrl)
+//            makeGone(imgUrlDelete,layoutWebUrl)
         }
     }
 

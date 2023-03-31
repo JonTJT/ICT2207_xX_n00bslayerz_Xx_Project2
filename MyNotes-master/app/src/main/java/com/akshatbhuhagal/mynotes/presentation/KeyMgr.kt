@@ -146,7 +146,7 @@ class KeyMgr {
         val salt = Base64.decode(storable.salt, Base64.DEFAULT)
         println("Debug_Stored Salt: " + salt.test())
         val secret: SecretKey = generateSecretKey(passcode, salt)
-        println("Debug_Secret Key generated for decrypting DB_AES Key: " + secret.encoded.test())
+        println("Debug_Secret Key: " + secret.encoded.test())
         val cipher = Cipher.getInstance("AES/CTR/NoPadding")
         cipher.init(Cipher.DECRYPT_MODE, secret, IvParameterSpec(iv))
         println("Debug_Decrypted DB RawKey: "+ cipher.doFinal(aesWrappedKey).test())
