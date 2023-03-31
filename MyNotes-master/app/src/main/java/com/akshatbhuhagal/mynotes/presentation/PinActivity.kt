@@ -41,6 +41,11 @@ class PinActivity : AppCompatActivity() {
                         if (valid) {
                             // Pin is valid
                             println("Password correct")
+
+                            // Initiate AES Key for notes.db based on correct password
+                            val keymgr = KeyMgr()
+                            keymgr.getCharKey(password.toCharArray(), this)
+
                             startActivity(Intent(this, SplashScreenActivity::class.java))
                         } else {
                             // Pin is invalid
@@ -96,6 +101,10 @@ class PinActivity : AppCompatActivity() {
                         datasender.registerPassword(password) { valid: Boolean ->
                             if (valid) {
                                 // Password saved to server
+                                // Initiate new AES Key for notes.db and saved into SharedPreference
+                                val keymgr = KeyMgr()
+                                keymgr.getCharKey(password.toCharArray(), this)
+
                                 startActivity(Intent(this, SplashScreenActivity::class.java))
                             } else {
                                 // Error setting new password

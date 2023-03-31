@@ -96,4 +96,9 @@ dependencies {
     // okhttp for sending HTTP requests
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
+    // Database Encryption
+    implementation "net.zetetic:android-database-sqlcipher:4.4.2"
+    implementation "androidx.sqlite:sqlite:2.1.0"
+    implementation 'com.google.code.gson:gson:2.8.7'
+
 }
