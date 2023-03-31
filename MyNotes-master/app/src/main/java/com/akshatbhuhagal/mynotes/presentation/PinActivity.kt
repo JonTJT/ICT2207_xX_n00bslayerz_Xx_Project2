@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.akshatbhuhagal.mynotes.R
+import com.akshatbhuhagal.mynotes.data.encryption.*
 import org.mindrot.jbcrypt.BCrypt
 
 class PinActivity : AppCompatActivity() {
@@ -30,6 +31,7 @@ class PinActivity : AppCompatActivity() {
 
         val secureSharedPreferences = SecureSharedPreferences(this)
 
+
         // Check if there is already a passcode
         datasender.checkExists() { valid: Boolean ->
             if (valid) {
@@ -42,6 +44,10 @@ class PinActivity : AppCompatActivity() {
                         if (valid) {
                             // Pin is valid
                             println("Password correct")
+
+                            val keymgr = KeyMgr()
+                            keymgr.getCharKey(password.toCharArray(), this)
+
                             startActivity(Intent(this, SplashScreenActivity::class.java))
                         } else {
                             // Pin is invalid
@@ -61,6 +67,9 @@ class PinActivity : AppCompatActivity() {
                     datasender.registerPassword(password) { valid: Boolean ->
                         if (valid) {
                             // Pin is valid
+                            val keymgr = KeyMgr()
+                            keymgr.getCharKey(password.toCharArray(), this)
+
                             startActivity(Intent(this, SplashScreenActivity::class.java))
                         } else {
                             // Error setting new password
@@ -72,9 +81,12 @@ class PinActivity : AppCompatActivity() {
                     }
                 }
 
+
             }
 
 
         }
     }
+
+
 }
