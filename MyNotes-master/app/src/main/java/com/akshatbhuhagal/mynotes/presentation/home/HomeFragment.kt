@@ -72,6 +72,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun collectNotes() = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
         viewModel.notes.collectLatest {
+            if (notesAdapter.itemCount == 0) {
+                notesAdapter.submitList(null)
+            }
             notesAdapter.submitList(it)
         }
     }

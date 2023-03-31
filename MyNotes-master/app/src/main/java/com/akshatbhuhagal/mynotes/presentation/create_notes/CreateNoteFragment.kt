@@ -96,19 +96,6 @@ class CreateNoteFragment :
             selectedImagePath = note.imgPath.orEmpty()
             imgNote.setImageBitmap(BitmapFactory.decodeFile(note.imgPath))
             makeVisible(layoutImage,imgNote.imgDelete)
-        } else {
-            /* Comment this function if application is crashing */
-            makeGone(layoutImage,imgNote.imgDelete)
-        }
-
-        if (note.webLink != EMPTY_STRING) {
-            webLink = note.webLink.orEmpty()
-            tvWebLink.text = note.webLink
-            makeVisible(layoutWebUrl,imgUrlDelete)
-            etWebLink.setText(note.webLink)
-        } else {
-            /* Comment this function if application is crashing */
-            makeGone(imgUrlDelete,layoutWebUrl)
         }
     }
 
