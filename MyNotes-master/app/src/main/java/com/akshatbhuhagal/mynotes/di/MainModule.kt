@@ -24,7 +24,7 @@ object MainModule {
     fun providesDatabase(@ApplicationContext context: Context):NotesDataBase {
         val supportFactory = SupportFactory(SQLiteDatabase.getBytes(KeyMgr.dbCharKey))
         return Room.databaseBuilder(context, NotesDataBase::class.java, "notes.db").openHelperFactory(supportFactory).build()
-//        Room.databaseBuilder(context, NotesDataBase::class.java, "notes.db").build()
+//        return Room.databaseBuilder(context, NotesDataBase::class.java, "notes.db").build()
     }
 
 

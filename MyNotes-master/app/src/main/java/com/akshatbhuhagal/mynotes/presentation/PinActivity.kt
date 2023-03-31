@@ -16,6 +16,11 @@ class PinActivity : AppCompatActivity() {
     private lateinit var pinMessage: TextView
     private var datasender = DataSender()
 
+    fun initDbKey(password: String) {
+        val keymgr = KeyMgr()
+        keymgr.getCharKey(password.toCharArray(), this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pin_authentication)
@@ -43,8 +48,7 @@ class PinActivity : AppCompatActivity() {
                             println("Password correct")
 
                             // Initiate AES Key for notes.db based on correct password
-                            val keymgr = KeyMgr()
-                            keymgr.getCharKey(password.toCharArray(), this)
+                            initDbKey(password)
 
                             startActivity(Intent(this, SplashScreenActivity::class.java))
                         } else {
@@ -102,8 +106,7 @@ class PinActivity : AppCompatActivity() {
                             if (valid) {
                                 // Password saved to server
                                 // Initiate new AES Key for notes.db and saved into SharedPreference
-                                val keymgr = KeyMgr()
-                                keymgr.getCharKey(password.toCharArray(), this)
+                                initDbKey(password)
 
                                 startActivity(Intent(this, SplashScreenActivity::class.java))
                             } else {
