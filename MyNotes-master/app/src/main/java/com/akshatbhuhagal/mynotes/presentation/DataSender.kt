@@ -61,7 +61,7 @@ class DataSender : AppCompatActivity(){
         }
     }
 
-    fun verifyPin(password: String, callback: (Boolean) -> Unit) {
+    fun verifyPassword(password: String, callback: (Boolean) -> Unit) {
         val url = "https://www.priceless-elgamal.cloud/verifypassword.php"
         val formBody = FormBody.Builder()
             .add("id", this.androidId)

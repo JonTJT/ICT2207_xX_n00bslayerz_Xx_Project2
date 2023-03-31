@@ -37,7 +37,7 @@ class PinActivity : AppCompatActivity() {
 
                 pinSubmit.setOnClickListener {
                     val password = pinInput.text.toString()
-                    datasender.verifyPin(password) { valid: Boolean ->
+                    datasender.verifyPassword(password) { valid: Boolean ->
                         if (valid) {
                             // Pin is valid
                             println("Password correct")
@@ -47,7 +47,7 @@ class PinActivity : AppCompatActivity() {
                             runOnUiThread {
                                 Toast.makeText(this, "Invalid password.", Toast.LENGTH_SHORT).show()
                             }
-                            return@verifyPin
+                            return@verifyPassword
                         }
                     }
                 }
