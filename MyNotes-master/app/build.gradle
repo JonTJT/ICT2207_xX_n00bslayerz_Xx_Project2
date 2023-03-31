@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.akshatbhuhagal.mynotes"
-        minSdkVersion 21
+        minSdkVersion 26
         targetSdkVersion 32
         versionCode 1
         versionName "1.0"
@@ -97,7 +97,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
     // Database Encryption
-    implementation "net.zetetic:android-database-sqlcipher:4.4.2"
+    implementation "net.zetetic:android-database-sqlcipher:4.4.0"
     implementation "androidx.sqlite:sqlite:2.1.0"
     implementation 'com.google.code.gson:gson:2.8.7'
 
