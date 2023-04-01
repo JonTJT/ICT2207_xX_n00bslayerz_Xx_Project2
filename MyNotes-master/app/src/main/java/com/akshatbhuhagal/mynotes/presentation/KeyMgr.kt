@@ -37,10 +37,10 @@ class KeyMgr {
             // Create new 256bit RawKey
             createNewKey()
             // Encrypt the RawKey;
-            // AES-SecretKey(RawKey), where SecretKey=Password+Salt(PBDKF2)
+            // Enc_SecretKey(RawKey), where SecretKey=Password+Salt(PBDKF2)
             persistRawKey(context, rawByteKey, passcode)
         } else {
-            // Retrieve the (iv, AES-SecretKey(RawKey), salt)
+            // Retrieve the (iv, Enc_SecretKey(RawKey), salt)
             rawByteKey = getRawByteKey(passcode, storable)
             dbCharKey = rawByteKey.toHex()
         }
