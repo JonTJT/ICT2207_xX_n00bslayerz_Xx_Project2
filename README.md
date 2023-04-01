@@ -27,7 +27,15 @@ On top of the original application, these security features have been added:
 ## :space_invader:Known bugs from the original application:space_invader:: 
 - Accessing a note crashes the program
   - Fixed by commenting out makeGone function in CreateNoteFragment.kt
+- Https link appears in note despite user not providing a link
+  - Fixed by removing the auto-showing of links in a note in CreateNote
 - Unable to see all the notes when the application starts up
-  - Fixed by calling submitList(null) prior to updating the ArrayList to ensure that the state is updated.
+
+## Known common issues:
+- Threading error is sometimes caused by the "Enter password" title.
+- Database error when updating from the original application to the modified one. Application will crash when attempting to access notes.
+  ![image](https://user-images.githubusercontent.com/38094040/229277295-249fa612-a88a-445a-9065-f5626064e238.png)
+  - To fix, uninstall the original application first, then install the modified application. This is caused by the original database being created without a key, but is not updated to be encrypted when the application is updated. 
+
 
 
