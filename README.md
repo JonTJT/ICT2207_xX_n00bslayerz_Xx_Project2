@@ -1,4 +1,7 @@
 # ICT2207_xX_n00bslayerz_Xx_
+This project is a modification of the existing application "MyNotes" by adding new security features to enhance the security of the existing application. The links to the original application can be found in the links below:<br>
+GitHub Repository: https://github.com/akshatbhuhagal/MyNotes<br>
+Google Play Store: https://play.google.com/store/apps/details?id=com.akshatbhuhagal.mynotes
 
 ## :family_man_girl_boy:Project Members:family_man_boy_boy::
 Meng Rong - https://github.com/GMengRong<br>
