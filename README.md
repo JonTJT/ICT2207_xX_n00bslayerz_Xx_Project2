@@ -21,8 +21,10 @@ On top of the original application, these security features have been added:
 2. Added database encryption to encrypt all of the notes in the event that the database is compromised
 3. Added client server functionality to authenticate the credentials
 
-## Known bugs
+## Bugs fixed from original application
 - Accessing a note crashes the program
   - Fixed by commenting out makeGone function in CreateNoteFragment.kt
-- Unable to see all the notes after creating them unless using the search bar
+- Unable to see all the notes when the application starts up
+  - Fixed by calling submitList(null) prior to updating the ArrayList to ensure that the state is updated.
+
 
