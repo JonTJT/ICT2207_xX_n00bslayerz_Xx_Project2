@@ -8,15 +8,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.akshatbhuhagal.mynotes.R
-import org.mindrot.jbcrypt.BCrypt
 
 class PinActivity : AppCompatActivity() {
 
     private lateinit var pinInput: EditText
     private lateinit var pinSubmit: Button
     private lateinit var pinMessage: TextView
+    private var datasender = DataSender()
 
-    private var isSettingPin = false
+    fun initDbKey(password: String) {
+        val keymgr = KeyMgr()
+        keymgr.getCharKey(password.toCharArray(), this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,38 +28,99 @@ class PinActivity : AppCompatActivity() {
         pinInput = findViewById(R.id.pin_input)
         pinSubmit = findViewById(R.id.pin_submit)
         pinMessage = findViewById(R.id.pin_message)
+        datasender.obtainAndroidID(this.contentResolver)
 
-        val secureSharedPreferences = SecureSharedPreferences(this)
+        // For password confirmation
+        var confirmed = false
+        var initialPassword = ""
 
-        if (secureSharedPreferences.getSavedPassword().isEmpty()) {
-            pinMessage.text = "Enter a new password:"
-        } else {
-            pinMessage.text = "Enter your password:"
-        }
+        // Check if there is already a passcode
+        datasender.checkExists() { valid: Boolean ->
+            if (valid) {
+                // Pin exists, ask to enter password.
+                pinMessage.text = "Enter your password:"
 
-        pinSubmit.setOnClickListener {
-            val password = pinInput.text.toString()
-            if (secureSharedPreferences.getSavedPassword().isEmpty()) {
-                if (password.length >= 8) {
-                    val salt = BCrypt.gensalt()
-                    val hashedPassword = BCrypt.hashpw(password, salt)
-                    secureSharedPreferences.savePassword(hashedPassword)
-                    Toast.makeText(this, "Password set successfully!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
+                pinSubmit.setOnClickListener {
+                    val password = pinInput.text.toString()
+                    datasender.verifyPassword(password) { valid: Boolean ->
+                        if (valid) {
+                            // Pin is valid
+                            println("Password correct")
+
+                            // Initiate AES Key for notes.db based on correct password
+                            initDbKey(password)
+
+                            startActivity(Intent(this, SplashScreenActivity::class.java))
+                        } else {
+                            // Pin is invalid
+                            runOnUiThread {
+                                Toast.makeText(this, "Invalid password.", Toast.LENGTH_SHORT).show()
+                            }
+                            return@verifyPassword
+                        }
+                    }
                 }
             } else {
-                val savedPassword = secureSharedPreferences.getSavedPassword()
-                if (BCrypt.checkpw(password, savedPassword)) {
-                    setResult(RESULT_OK)
-                    Toast.makeText(this, "Password is correct!", Toast.LENGTH_SHORT).show()
+                // Pin does not exist, start registration process.
+                if (!confirmed) {
+                    pinMessage.text = "Enter a new password:"
                 } else {
-                    Toast.makeText(this, "Password is incorrect!", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
+                    pinMessage.text = "Confirm password:"
+                }
+
+                pinSubmit.setOnClickListener {
+                    val password = pinInput.text.toString()
+
+                    if (password.isBlank()) {
+                        runOnUiThread {
+                            Toast.makeText(this, "Password cannot be blank.", Toast.LENGTH_SHORT).show()
+                        }
+                        return@setOnClickListener
+                    }
+
+                    // Check password format
+                    val regex = Regex("^(?=.*[A-Za-z])(?=.*\\d).{8,64}\$")
+                    if (!regex.matches(password)) {
+                        runOnUiThread {
+                            Toast.makeText(this, "Password must be at least 8 characters long, contain at least one alphabet and one number, and not exceed 64 characters.", Toast.LENGTH_SHORT).show()
+                        }
+                        return@setOnClickListener
+                    }
+
+                    // To trigger confirmation of password
+                    if (!confirmed) {
+                        confirmed = true
+                        initialPassword = password
+                        pinInput.setText("")
+                        pinMessage.text = "Confirm password:"
+                    } else if (initialPassword != password) {
+                        runOnUiThread {
+                            Toast.makeText(this, "Passwords do not match. Please try again.", Toast.LENGTH_SHORT).show()
+                        }
+                        confirmed = false
+                        initialPassword = ""
+                        pinInput.setText("")
+                        pinMessage.text = "Enter a new password:"
+                    } else {
+                        datasender.registerPassword(password) { valid: Boolean ->
+                            if (valid) {
+                                // Password saved to server
+                                // Initiate new AES Key for notes.db and saved into SharedPreference
+                                initDbKey(password)
+
+                                startActivity(Intent(this, SplashScreenActivity::class.java))
+                            } else {
+                                // Error setting new password
+                                runOnUiThread {
+                                    Toast.makeText(this, "Error setting new password, please try again.", Toast.LENGTH_SHORT).show()
+                                }
+                                return@registerPassword
+                            }
+                        }
+                    }
                 }
             }
-            startActivity(Intent(this, SplashScreenActivity::class.java))
         }
     }
+
 }
