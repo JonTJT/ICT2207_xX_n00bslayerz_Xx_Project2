@@ -91,25 +91,6 @@ class CreateNoteFragment :
         colorView.setBackgroundColor(Color.parseColor(note.color))
         etNoteTitle.setText(note.title)
         etNoteDesc.setText(note.noteText)
-
-        if (note.imgPath != EMPTY_STRING) {
-            selectedImagePath = note.imgPath.orEmpty()
-            imgNote.setImageBitmap(BitmapFactory.decodeFile(note.imgPath))
-            makeVisible(layoutImage,imgNote.imgDelete)
-        } else {
-            /* Comment this function if application is crashing */
-//            makeGone(layoutImage,imgNote.imgDelete)
-        }
-
-        if (note.webLink != EMPTY_STRING) {
-            webLink = note.webLink.orEmpty()
-            tvWebLink.text = note.webLink
-            makeVisible(layoutWebUrl,imgUrlDelete)
-            etWebLink.setText(note.webLink)
-        } else {
-            /* Comment this function if application is crashing */
-//            makeGone(imgUrlDelete,layoutWebUrl)
-        }
     }
 
     private fun initViews() = binding.apply {
